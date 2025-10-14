@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a2e 0%, #16213e 50%, #0f3460 100%);
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+}
+
+#gameContainer {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  background: #000;
+  border: 3px solid #00ffff;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  overflow: hidden;
+}
+
+#gameCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#ui {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #00ffff;
+  font-size: 18px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+  z-index: 10;
+}
+
+#gameOver {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #ff0066;
+  font-size: 48px;
+  text-shadow: 0 0 20px rgba(255, 0, 102, 0.8);
+  display: none;
+  z-index: 20;
+}
+
+#gameOver button {
+  margin-top: 20px;
+  padding: 15px 40px;
+  font-size: 20px;
+  background: linear-gradient(45deg, #ff0066, #00ffff);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 10px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+  transition: transform 0.2s;
+}
+
+#gameOver button:hover {
+  transform: scale(1.1);
+}
+
+.star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle 2s infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+#controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+}
+
+.control-btn {
+  width: 70px;
+  height: 70px;
+  background: rgba(0, 255, 255, 0.3);
+  border: 2px solid #00ffff;
+  border-radius: 10px;
+  color: #00ffff;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  user-select: none;
+  transition: all 0.1s;
+}
+
+.control-btn:active {
+  background: rgba(0, 255, 255, 0.6);
+  transform: scale(0.95);
+}
+
+.control-btn:hover {
+  background: rgba(0, 255, 255, 0.5);
+}
+
+#shootBtn {
+  background: rgba(255, 255, 0, 0.3);
+  border-color: #ffff00;
+  box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
+}
+
+#shootBtn:active {
+  background: rgba(255, 255, 0, 0.6);
+}
+
+#shootBtn:hover {
+  background: rgba(255, 255, 0, 0.5);
+}
