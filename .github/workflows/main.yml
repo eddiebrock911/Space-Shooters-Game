@@ -1,0 +1,32 @@
+name: auto-commit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update file
+        run: echo "$(date)" >> auto-file.txt
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "Ankit"
+          git config --global user.email "ankitkumar823089@gmail.com"
+          git add auto-file.txt
+          git commit -m "auto commit" || exit 0
+          git push origin main
