@@ -37,7 +37,9 @@ This project demonstrates core JavaScript game development concepts including co
 
 <p align="center">
 
-<img src="images/screenshot.png" width="900">
+<img src="image/screenshot1.png" width="900">
+
+<img src="image/screenshot2.png" width="900">
 
 </p>
 
