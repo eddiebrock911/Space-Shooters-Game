@@ -29,16 +29,9 @@ This project demonstrates core JavaScript game development concepts including co
 
 # 🎮 Live Demo
 
-> **Coming Soon**
+[🌐 Live Demo](https://spacekit.onrender.com/)
 
-Deploy on:
 
-* Vercel
-* Netlify
-* GitHub Pages
-* Render
-
----
 
 # 📸 Preview
 
