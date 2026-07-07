@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEON STRIKE: SPACE SHOOTER</title>
+  <!-- Google Fonts Orbitron for Cyberpunk vibe -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Main Game Container -->
+  <div id="gameContainer">
+    <!-- The game screen canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Top HUD Overlay -->
+    <div id="hud" class="hud-overlay">
+      <div class="hud-left">
+        <div>PLANET: <span id="hudPlanet">EARTH</span></div>
+        <div>SCORE: <span id="hudScore">0</span></div>
+        <div>COINS: <span id="hudCoins">0</span> <span class="coin-icon">🪙</span></div>
+      </div>
+      
+      <div class="hud-center">
+        <!-- Active Combo display -->
+        <div id="hudCombo" class="combo-glow">COMBO x1</div>
+        <!-- Current Mission Tip -->
+        <div id="hudMissionText">MISSION: Kill 20 enemies</div>
+      </div>
+
+      <div class="hud-right">
+        <div class="stat-row">
+          <span>LIVES:</span>
+          <div class="bar-bg"><div id="livesBar" class="bar-fill lives-fill" style="width: 100%"></div></div>
+          <span id="hudLives">3</span>
+        </div>
+        <div class="stat-row">
+          <span>SHIELD:</span>
+          <div class="bar-bg"><div id="shieldBar" class="bar-fill shield-fill" style="width: 0%"></div></div>
+          <span id="hudShield">0%</span>
+        </div>
+        <div id="fpsCounter">FPS: 60</div>
+      </div>
+    </div>
+
+    <!-- Active Power-up duration bar -->
+    <div id="powerupTimer" class="hud-overlay">
+      <span id="powerupLabel">SHIELD ACTIVE:</span>
+      <div class="bar-bg"><div id="powerupBar" class="bar-fill powerup-fill" style="width: 0%"></div></div>
+    </div>
+
+    <!-- Boss Approaching Warning Cutscene -->
+    <div id="bossWarning" class="screen-overlay centered warning-glow">
+      <div class="warning-alert">⚠️ WARNING ⚠️</div>
+      <div class="warning-title">BOSS APPROACHING</div>
+      <div class="warning-desc">PREPARE FOR BATTLE!</div>
+    </div>
+
+    <!-- Boss Health Bar -->
+    <div id="bossHealthContainer" class="hud-overlay">
+      <div class="boss-label">BOSS: NEON DESTROYER</div>
+      <div class="bar-bg"><div id="bossHealthBar" class="bar-fill boss-fill" style="width: 100%"></div></div>
+    </div>
+
+    <!-- Visual Screen Flash effect (damage, bomb, etc.) -->
+    <div id="screenFlash"></div>
+
+    <!-- 1. Main Menu Screen -->
+    <div id="mainMenu" class="screen-overlay menu-screen active">
+      <h1 class="game-title">NEON STRIKE</h1>
+      <h2 class="game-subtitle">SPACE SHIFT</h2>
+      
+      <div class="menu-buttons">
+        <button onclick="openStorySelect()">STORY MODE</button>
+        <button onclick="startEndlessMode()">ENDLESS MODE</button>
+        <button onclick="openHangar()">HANGAR (SHIPS)</button>
+        <button onclick="openUpgrades()">UPGRADES (SHOP)</button>
+        <button onclick="openAchievements()">ACHIEVEMENTS</button>
+        <button onclick="openLeaderboard()">LEADERBOARD</button>
+        <button onclick="openSettings()">SETTINGS</button>
+      </div>
+
+      <div class="daily-reward-notifier" onclick="openDailyRewards()">
+        🎁 Daily Reward Ready! Click to claim.
+      </div>
+    </div>
+
+    <!-- 2. Story Level Select Screen -->
+    <div id="levelSelectMenu" class="screen-overlay menu-screen">
+      <h2 class="menu-title">SELECT PLANET</h2>
+      <div class="level-grid" id="levelGrid">
+        <!-- Planets generated dynamically in JS -->
+      </div>
+      <button class="back-btn" onclick="showMainMenu()">BACK</button>
+    </div>
+
+    <!-- 3. Hangar (Ships) Screen -->
+    <div id="hangarMenu" class="screen-overlay menu-screen">
+      <h2 class="menu-title">HANGAR - SHIPS</h2>
+      <div class="coins-display">COINS: <span id="hangarCoins">0</span> 🪙</div>
+      
+      <div class="hangar-container">
+        <div class="ship-selector-list" id="shipList">
+          <!-- Ships generated dynamically in JS -->
+        </div>
+        <div class="ship-preview-panel" id="shipPreview">
+          <div class="ship-preview-art" id="previewArt">🚀</div>
+          <h3 id="previewName">BASIC SHIP</h3>
+          <div class="ship-stats">
+            <div>SPEED: <div class="bar-bg"><div id="statSpeed" class="bar-fill stat-fill" style="width: 50%"></div></div></div>
+            <div>HP/LIVES: <div class="bar-bg"><div id="statHP" class="bar-fill stat-fill animate-glow" style="width: 50%"></div></div></div>
+            <div>DAMAGE: <div class="bar-bg"><div id="statDamage" class="bar-fill stat-fill" style="width: 50%"></div></div></div>
+          </div>
+          <div class="ship-actions">
+            <button id="shipBuyEquipBtn" onclick="buyOrEquipShip()">EQUIP</button>
+          </div>
+        </div>
+      </div>
+      <button class="back-btn" onclick="showMainMenu()">BACK</button>
+    </div>
+
+    <!-- 4. Upgrades (Shop) Screen -->
+    <div id="upgradesMenu" class="screen-overlay menu-screen">
+      <h2 class="menu-title">HANGAR UPGRADES</h2>
+      <div class="coins-display">COINS: <span id="upgradesCoins">0</span> 🪙</div>
+      <div class="upgrades-list" id="upgradesList">
+        <!-- Upgrades generated dynamically in JS -->
+      </div>
+      <button class="back-btn" onclick="showMainMenu()">BACK</button>
+    </div>
+
+    <!-- 5. Achievements Screen -->
+    <div id="achievementsMenu" class="screen-overlay menu-screen">
+      <h2 class="menu-title">ACHIEVEMENTS</h2>
+      <div class="achievements-container" id="achievementsList">
+        <!-- Achievements generated dynamically in JS -->
+      </div>
+      <button class="back-btn" onclick="showMainMenu()">BACK</button>
+    </div>
+
+    <!-- 6. Leaderboard Screen -->
+    <div id="leaderboardMenu" class="screen-overlay menu-screen">
+      <h2 class="menu-title">LEADERBOARD</h2>
+      <div class="leaderboard-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Pilot</th>
+              <th>High Score</th>
+              <th>Max Combo</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <!-- Populated dynamically in JS -->
+          </tbody>
+        </table>
+      </div>
+      <button class="back-btn" onclick="showMainMenu()">BACK</button>
+    </div>
+
+    <!-- 7. Settings Screen -->
+    <div id="settingsMenu" class="screen-overlay menu-screen">
+      <h2 class="menu-title">SETTINGS</h2>
+      <div class="settings-container">
+        <div class="setting-row">
+          <label for="sfxToggle">Sound FX:</label>
+          <input type="checkbox" id="sfxToggle" checked onclick="toggleSound()">
+        </div>
+        <div class="setting-row">
+          <label for="musicToggle">Background Music:</label>
+          <input type="checkbox" id="musicToggle" checked onclick="toggleMusic()">
+        </div>
+        <div class="setting-row">
+          <label for="shakeToggle">Screen Shake:</label>
+          <select id="shakeToggle" onchange="changeShake()">
+            <option value="high">HIGH</option>
+            <option value="low" selected>LOW</option>
+            <option value="none">NONE</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label for="controlSelect">Control Scheme:</label>
+          <select id="controlSelect" onchange="changeControls()">
+            <option value="keys">Keyboard (WASD / Arrows)</option>
+            <option value="mouse">Mouse Follow</option>
+            <option value="touch">Virtual Joystick (Mobile)</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <button onclick="toggleFullscreen()">Toggle Fullscreen</button>
+        </div>
+      </div>
+      <button class="back-btn" onclick="showMainMenu()">BACK</button>
+    </div>
+
+    <!-- 8. Daily Rewards Modal -->
+    <div id="dailyRewardsModal" class="screen-overlay modal-overlay">
+      <div class="modal-content">
+        <h2>DAILY LOG IN REWARDS</h2>
+        <div class="daily-grid" id="dailyGrid">
+          <!-- Populated in JS -->
+        </div>
+        <button id="claimRewardBtn" onclick="claimDailyReward()">CLAIM REWARD</button>
+        <button class="modal-close-btn" onclick="closeDailyRewards()">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- 9. Pause Menu -->
+    <div id="pauseMenu" class="screen-overlay centered-menu">
+      <h2 class="paused-title">PAUSED</h2>
+      <div class="pause-buttons">
+        <button onclick="resumeGame()">RESUME</button>
+        <button onclick="restartRun()">RESTART</button>
+        <button onclick="openPauseSettings()">SETTINGS</button>
+        <button onclick="quitToMainMenu()">QUIT TO MENU</button>
+      </div>
+    </div>
+
+    <!-- 10. Game Over Screen -->
+    <div id="gameOver" class="screen-overlay centered-menu">
+      <div class="gameover-title">GAME OVER</div>
+      <div class="gameover-stats">
+        <div>FINAL SCORE: <span id="finalScore">0</span></div>
+        <div>COINS EARNED: <span id="finalCoins">0</span> 🪙</div>
+        <div>ENEMIES DEFEATED: <span id="finalKills">0</span></div>
+        <div>MAX COMBO: <span id="finalCombo">0</span></div>
+      </div>
+      <div class="gameover-buttons">
+        <button onclick="restartRun()">PLAY AGAIN</button>
+        <button onclick="quitToMainMenu()">MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Controls Layer (Joystick and Shoot button) -->
+  <div id="mobileControls">
+    <div id="joystickZone">
+      <div id="joystickBase">
+        <div id="joystickStick"></div>
+      </div>
+    </div>
+    <div id="mobileShootArea">
+      <button id="mobileShootBtn">AUTO-FIRE ACTIVE</button>
+    </div>
+  </div>
+
+  <!-- Audio synthesiser -->
+  <script src="audio.js"></script>
+  <!-- Game engine -->
+  <script src="script.js"></script>
+</body>
+</html>
