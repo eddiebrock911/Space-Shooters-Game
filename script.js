@@ -2026,6 +2026,7 @@ function updateBossBehavior() {
 
   // Boss hit by player bullets
   bullets.forEach((b, idx) => {
+    if (!boss) return; // boss may have been destroyed mid-loop
     if (checkCollision(b, boss)) {
       bullets.splice(idx, 1);
       boss.hp -= b.damage;
